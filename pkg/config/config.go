@@ -2,12 +2,10 @@ package config
 
 // Config defines the project configuration.
 type Config struct {
-	Version      string       `yaml:"version" json:"version"`
-	Name         string       `yaml:"name" json:"name" json:"name"`
-	Deploy       Deploy       `yaml:"deploy" json:"deploy"`
-	Application  Application  `yaml:"application" json:"application"`
-	CI           CI           `yaml:"ci" json:"ci" jsonschema:"enum=github"`
-	Orchestrator Orchestrator `yaml:"orchestrator" json:"orchestrator" jsonschema:"enum=kubernetes"`
+	Name         string                 `yaml:"name,omitempty" json:"name,omitempty"`
+	Application  Application            `yaml:"application" json:"application"`
+	Environments map[string]Environment `yaml:"environments" json:"environments"`
+	CI           CI                     `yaml:"ci" json:"ci" jsonschema:"enum=github"`
 }
 
 // Validate calls the Validate methods on nested sections.
