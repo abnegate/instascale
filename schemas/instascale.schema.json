@@ -18,54 +18,49 @@
         },
         "services": {
           "items": {
-            "type": "string"
+            "$ref": "#/$defs/Service"
           },
           "type": "array"
+        },
+        "version": {
+          "type": "string"
         }
       },
       "additionalProperties": false,
       "type": "object",
       "required": [
         "language",
-        "framework"
+        "framework",
+        "version"
       ]
     },
     "Config": {
       "properties": {
-        "version": {
-          "type": "string"
-        },
         "name": {
           "type": "string"
         },
-        "deploy": {
-          "$ref": "#/$defs/Deploy"
-        },
         "application": {
           "$ref": "#/$defs/Application"
+        },
+        "environments": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Environment"
+          },
+          "type": "object"
         },
         "ci": {
           "type": "string",
           "enum": [
             "github"
           ]
-        },
-        "orchestrator": {
-          "type": "string",
-          "enum": [
-            "kubernetes"
-          ]
         }
       },
       "additionalProperties": false,
       "type": "object",
       "required": [
-        "version",
-        "name",
-        "deploy",
         "application",
-        "ci",
-        "orchestrator"
+        "environments",
+        "ci"
       ]
     },
     "Deploy": {
@@ -92,6 +87,59 @@
       "type": "object",
       "required": [
         "target"
+      ]
+    },
+    "Environment": {
+      "properties": {
+        "deploy": {
+          "$ref": "#/$defs/Deploy"
+        },
+        "orchestrator": {
+          "type": "string",
+          "enum": [
+            "kubernetes",
+            "compose",
+            "swarm"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "deploy",
+        "orchestrator"
+      ]
+    },
+    "Service": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "http",
+            "postgres",
+            "mysql",
+            "mongo",
+            "redis"
+          ]
+        },
+        "version": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "env": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "type"
       ]
     }
   }

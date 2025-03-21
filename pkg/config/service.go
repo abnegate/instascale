@@ -14,9 +14,11 @@ const (
 
 // Service represents a single microservice in your application.
 type Service struct {
-	Name    string `yaml:"name" json:"name"`
-	Type    string `yaml:"type" json:"type" jsonschema:"enum=http,enum=postgres,enum=mysql,enum=mongo,enum=redis"`
-	Version string `yaml:"version" json:"version"`
+	Name    string                 `yaml:"name" json:"name"`
+	Type    string                 `yaml:"type" json:"type" jsonschema:"enum=http,enum=postgres,enum=mysql,enum=mongo,enum=redis"`
+	Version string                 `yaml:"version,omitempty" json:"version,omitempty"`
+	Port    uint16                 `yaml:"port,omitempty" json:"port,omitempty"`
+	Env     map[string]interface{} `yaml:"env,omitempty" json:"env,omitempty"`
 }
 
 // Validate checks the Service configuration for basic correctness.
