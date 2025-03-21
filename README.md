@@ -1,35 +1,32 @@
-# InstaScale – Scale Your Ideas in Minutes!
+# InstaScale – scale your ideas in minutes
 
-InstaScale is a revolutionary SaaS project generator that turns your concept into a production-ready backend in just
-minutes. Focus on writing your unique business logic while InstaScale automates the heavy lifting of generating code,
-infrastructure, CI/CD pipelines, and orchestration manifests. Build smart. Scale fast.
+InstaScale is a SaaS project generator that turns your concept into a production-ready backend in just
+minutes. Focus on writing your unique business logic while InstaScale automates the heavy lifting. 
+
+Build smart. Scale **fast**.
 
 ---
 
 ## What is InstaScale?
 
-InstaScale automates the tedious setup of modern SaaS products by scaffolding complete projects with a single command.
-Whether you're a startup aiming to validate your idea or an enterprise ready to scale, InstaScale handles everything
-from local prototyping to AWS production deployments. Our modular plugin architecture supports multiple deployment
-targets, CI configurations, and orchestration tools—ensuring your project stays future-proof and easily extensible.
+InstaScale automates the tedious setup required of modern SaaS products by scaffolding complete projects with a single
+command. Whether you're a startup aiming to validate your idea or an enterprise ready to scale, InstaScale handles everything
+from local prototyping to production deployments. A modular plugin architecture supports multiple deployment
+targets, CI configurations, orchestration tools, programming languages, and frameworks—ensuring your project stays
+future-proof and easily extensible.
 
 ---
 
 ## Key Features
 
 - **Instant Deployment:**  
-  Automatically generate your complete project, including boilerplate code, Terraform and Helm configurations, and
+  Automatically generate your complete project, including boilerplate code, Terraform, Helm configurations, and
   GitHub Actions workflows.
 
 - **Modular Plugin System:**  
   Easily switch between local and AWS deployments, generate Express.js code for JavaScript, and integrate CI/CD and
   Kubernetes support. Future plugins include GitLab CI and additional orchestrators like Docker Compose and Swarm.
-
-- **Flexible Subscription Levels:**
-    - **Free:** Ideal for testing and prototyping with local deployments.
-    - **Pro:** Unlock production-grade deployments with no resource limitations.
-    - **Enterprise:** Enjoy all Pro features plus built-in metrics and observability for mission-critical systems.
-
+- 
 - **Extensible and Future-Proof:**  
   With a clean, modular codebase, InstaScale is designed to evolve. Add new cloud providers, languages, and
   orchestration tools as your needs grow.
@@ -43,11 +40,19 @@ targets, CI configurations, and orchestration tools—ensuring your project stay
 Define your project settings in a YAML configuration file (e.g., `config.yaml`). For example:
 
 ```yaml
-name: MyAwesomeProject  
-deployment: local  
-language: javascript  
-framework: express
+name: MyAwesomeProject
+
+deploy:
+  target: aws
+  regions: 
+    - us-west-2
+
+application:
+  language: javascript
+  framework: express
+  
 ci: github-actions
+
 orchestrator: kubernetes
 ```
 
