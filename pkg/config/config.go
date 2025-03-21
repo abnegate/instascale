@@ -10,16 +10,15 @@ type Config struct {
 
 // Validate calls the Validate methods on nested sections.
 func (cfg *Config) Validate() error {
-	if err := cfg.Deploy.Validate(); err != nil {
-		return err
-	}
 	if err := cfg.Application.Validate(); err != nil {
 		return err
 	}
-	if err := cfg.CI.Validate(); err != nil {
-		return err
+	for _, env := range cfg.Environments {
+		if err := env.Validate(); err != nil {
+			return err
+		}
 	}
-	if err := cfg.Orchestrator.Validate(); err != nil {
+	if err := cfg.CI.Validate(); err != nil {
 		return err
 	}
 	return nil
