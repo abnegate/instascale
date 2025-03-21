@@ -1,0 +1,54 @@
+name: BestProject
+
+ci:
+  provider: github
+  owner: BestOrg
+  repo: BestRepo
+  lint: true
+  tests: true
+  coverage: true
+
+vcs:
+  provider: github
+  owner: BestOrg
+  repo: BestRepo
+  visibility: public
+
+application:
+  language:
+    name: javascript
+    version: emca7
+  framework: express
+  version: 1.0.0
+  services:
+    - name: api
+      type: http
+      version: 1.0.0
+    - name: database
+      type: postgres
+      version: 15.*
+      port: 5432
+      env:
+        POSTGRES_USER: $POSTGRES_USER
+        POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    - name: cache
+      type: redis
+      version: 5.0.0
+
+environments:
+  dev:
+    deploy:
+      target: local
+    orchestrator: compose
+  stage:
+    deploy:
+      target: aws
+      regions:
+        - us-east-1
+    orchestrator: kubernetes
+  prod:
+    deploy:
+      target: aws
+      regions:
+        - us-east-1
+        - us-west-2
