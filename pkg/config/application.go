@@ -20,7 +20,7 @@ const (
 type Application struct {
 	Language  Language  `yaml:"language" json:"language" jsonschema:"enum=javascript"`
 	Framework Framework `yaml:"framework" json:"framework" jsonschema:"enum=express"`
-	Services  []string  `yaml:"services,omitempty" json:"services,omitempty"`
+	Services  []Service `yaml:"services,omitempty" json:"services,omitempty"`
 }
 
 // Validate checks that the Application configuration is valid.
@@ -28,7 +28,15 @@ func (a *Application) Validate() error {
 	if err := validateLanguage(a.Language); err != nil {
 		return err
 	}
-	return validateFramework(a.Language, a.Framework)
+	if err := validateFramework(a.Language, a.Framework); err != nil {
+		return err
+	}
+	for _, svc := range a.Services {
+		if err := svc.Validate(); err != nil {
+			return fmt.Errorf("invalid service %q: %w", svc.Name, err)
+		}
+	}
+	return nil
 }
 
 func validateLanguage(lang Language) error {
