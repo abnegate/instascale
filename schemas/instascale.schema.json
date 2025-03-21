@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/Config",
+  "$defs": {
+    "Application": {
+      "properties": {
+        "language": {
+          "type": "string",
+          "enum": [
+            "javascript"
+          ]
+        },
+        "framework": {
+          "type": "string",
+          "enum": [
+            "express"
+          ]
+        },
+        "services": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "language",
+        "framework"
+      ]
+    },
+    "Config": {
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "deploy": {
+          "$ref": "#/$defs/Deploy"
+        },
+        "application": {
+          "$ref": "#/$defs/Application"
+        },
+        "ci": {
+          "type": "string",
+          "enum": [
+            "github"
+          ]
+        },
+        "orchestrator": {
+          "type": "string",
+          "enum": [
+            "kubernetes"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "version",
+        "name",
+        "deploy",
+        "application",
+        "ci",
+        "orchestrator"
+      ]
+    },
+    "Deploy": {
+      "properties": {
+        "target": {
+          "type": "string",
+          "enum": [
+            "local",
+            "aws"
+          ]
+        },
+        "regions": {
+          "items": {
+            "type": "string",
+            "enum": [
+              "us-east-1"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "target"
+      ]
+    }
+  }
+}
