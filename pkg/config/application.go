@@ -21,6 +21,7 @@ type Application struct {
 	Language  Language  `yaml:"language" json:"language" jsonschema:"enum=javascript"`
 	Framework Framework `yaml:"framework" json:"framework" jsonschema:"enum=express"`
 	Services  []Service `yaml:"services,omitempty" json:"services,omitempty"`
+	Version   string    `yaml:"version" json:"version"`
 }
 
 // Validate checks that the Application configuration is valid.
