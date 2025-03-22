@@ -1,223 +1,257 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$ref": "#/$defs/Config",
-  "$defs": {
-    "Application": {
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The project name."
+    },
+    "vcs": {
       "properties": {
-        "language": {
-          "$ref": "#/$defs/Language"
+        "provider": {
+          "type": "string",
+          "enum": [
+            "github"
+          ],
+          "description": "The VCS provider."
+        },
+        "owner": {
+          "type": "string",
+          "description": "The repository owner."
+        },
+        "repo": {
+          "type": "string",
+          "description": "The repository name."
+        },
+        "visibility": {
+          "type": "string",
+          "description": "The repository visibility."
+        }
+      },
+      "type": "object",
+      "required": [
+        "provider",
+        "owner",
+        "repo"
+      ],
+      "description": "Version Control System configuration."
+    },
+    "pipeline": {
+      "properties": {
+        "test": {
+          "type": "boolean",
+          "description": "Enable testing."
+        },
+        "coverage": {
+          "type": "boolean",
+          "description": "Enable coverage."
+        },
+        "provider": {
+          "type": "string",
+          "enum": [
+            "github",
+            "gitlab"
+          ],
+          "description": "The CI/CD provider."
+        },
+        "owner": {
+          "type": "string",
+          "description": "The repository owner."
+        },
+        "repo": {
+          "type": "string",
+          "description": "The repository name."
+        },
+        "lint": {
+          "type": "boolean",
+          "description": "Enable linting."
+        }
+      },
+      "type": "object",
+      "required": [
+        "provider",
+        "owner",
+        "repo"
+      ],
+      "description": "CI/CD pipeline configuration."
+    },
+    "application": {
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "The application version."
         },
         "services": {
           "items": {
-            "$ref": "#/$defs/Service"
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "type": {
+                      "const": "http"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "port"
+                  ]
+                }
+              }
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "http",
+                  "postgres",
+                  "mysql",
+                  "mongo",
+                  "redis"
+                ],
+                "description": "The service type."
+              },
+              "description": {
+                "type": "string",
+                "description": "The service description."
+              },
+              "version": {
+                "type": "string",
+                "description": "The service version."
+              },
+              "port": {
+                "type": "integer",
+                "maximum": 65535,
+                "minimum": 1024,
+                "description": "The service port."
+              },
+              "env": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object",
+                "description": "The service environment variables."
+              },
+              "name": {
+                "type": "string",
+                "description": "The service name."
+              }
+            },
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "description": "Service configuration."
           },
-          "type": "array"
-        },
-        "version": {
-          "type": "string"
+          "type": "array",
+          "description": "List of services in the application."
         }
       },
-      "additionalProperties": false,
       "type": "object",
       "required": [
-        "language"
-      ]
+        "language",
+        "services"
+      ],
+      "description": "Application configuration."
     },
-    "Config": {
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "vcs": {
-          "$ref": "#/$defs/VCS"
-        },
-        "pipeline": {
-          "$ref": "#/$defs/Pipelines"
-        },
-        "application": {
-          "$ref": "#/$defs/Application"
-        },
-        "environments": {
-          "additionalProperties": {
-            "$ref": "#/$defs/Environment"
+    "environments": {
+      "additionalProperties": {
+        "properties": {
+          "deploy": {
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "target": {
+                      "const": "local"
+                    }
+                  },
+                  "type": "object"
+                },
+                "then": {
+                  "properties": {
+                    "regions": {
+                      "maxItems": 0
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "target": {
+                      "const": "aws"
+                    }
+                  },
+                  "type": "object"
+                },
+                "then": {
+                  "properties": {
+                    "regions": {
+                      "enum": [
+                        "us-east-1"
+                      ]
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "regions"
+                  ]
+                }
+              }
+            ],
+            "properties": {
+              "target": {
+                "type": "string",
+                "enum": [
+                  "local",
+                  "aws"
+                ],
+                "description": "The deployment target."
+              },
+              "regions": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "description": "List of regions to deploy to."
+              }
+            },
+            "type": "object",
+            "required": [
+              "target"
+            ],
+            "description": "Deploy configuration."
           },
-          "type": "object"
-        }
+          "orchestrator": {
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "kubernetes",
+                  "compose",
+                  "swarm"
+                ],
+                "description": "The orchestrator type."
+              }
+            },
+            "type": "object",
+            "required": [
+              "type"
+            ],
+            "description": "Orchestrator configuration."
+          }
+        },
+        "type": "object",
+        "required": [
+          "deploy",
+          "orchestrator"
+        ],
+        "description": "Environment configuration."
       },
-      "additionalProperties": false,
       "type": "object",
-      "required": [
-        "application",
-        "environments"
-      ]
-    },
-    "Deploy": {
-      "properties": {
-        "target": {
-          "type": "string"
-        },
-        "regions": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        }
-      },
-      "additionalProperties": false,
-      "type": "object",
-      "required": [
-        "target"
-      ]
-    },
-    "Environment": {
-      "properties": {
-        "deploy": {
-          "$ref": "#/$defs/Deploy"
-        },
-        "orchestrator": {
-          "$ref": "#/$defs/Orchestrator"
-        }
-      },
-      "additionalProperties": false,
-      "type": "object",
-      "required": [
-        "deploy",
-        "orchestrator"
-      ]
-    },
-    "Framework": {
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "version": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": false,
-      "type": "object",
-      "required": [
-        "name",
-        "version"
-      ]
-    },
-    "Language": {
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "version": {
-          "type": "string"
-        },
-        "framework": {
-          "$ref": "#/$defs/Framework"
-        }
-      },
-      "additionalProperties": false,
-      "type": "object",
-      "required": [
-        "name",
-        "framework"
-      ]
-    },
-    "Orchestrator": {
-      "properties": {
-        "type": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": false,
-      "type": "object",
-      "required": [
-        "type"
-      ]
-    },
-    "Pipelines": {
-      "properties": {
-        "provider": {
-          "type": "string"
-        },
-        "owner": {
-          "type": "string"
-        },
-        "repo": {
-          "type": "string"
-        },
-        "lint": {
-          "type": "boolean"
-        },
-        "test": {
-          "type": "boolean"
-        },
-        "coverage": {
-          "type": "boolean"
-        }
-      },
-      "additionalProperties": false,
-      "type": "object",
-      "required": [
-        "provider",
-        "owner",
-        "repo",
-        "lint",
-        "test",
-        "coverage"
-      ]
-    },
-    "Service": {
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "version": {
-          "type": "string"
-        },
-        "port": {
-          "type": "integer"
-        },
-        "env": {
-          "additionalProperties": {
-            "type": "string"
-          },
-          "type": "object"
-        }
-      },
-      "additionalProperties": false,
-      "type": "object",
-      "required": [
-        "name",
-        "type"
-      ]
-    },
-    "VCS": {
-      "properties": {
-        "provider": {
-          "type": "string"
-        },
-        "owner": {
-          "type": "string"
-        },
-        "repo": {
-          "type": "string"
-        },
-        "visibility": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": false,
-      "type": "object",
-      "required": [
-        "provider",
-        "owner",
-        "repo",
-        "visibility"
-      ]
+      "description": "The project environments."
     }
-  }
+  },
+  "type": "object",
+  "description": "Project configuration."
 }

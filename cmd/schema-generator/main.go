@@ -3,13 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/invopop/jsonschema"
 	"instascale/pkg/config"
 	"os"
 )
 
 func main() {
-	schema := jsonschema.Reflect(&config.Config{})
+	schema := (&config.Config{}).JSONSchema()
 
 	data, err := json.MarshalIndent(schema, "", "  ")
 	if err != nil {
