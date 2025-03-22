@@ -5,16 +5,7 @@
     "Application": {
       "properties": {
         "language": {
-          "type": "string",
-          "enum": [
-            "javascript"
-          ]
-        },
-        "framework": {
-          "type": "string",
-          "enum": [
-            "express"
-          ]
+          "$ref": "#/$defs/Language"
         },
         "services": {
           "items": {
@@ -29,15 +20,19 @@
       "additionalProperties": false,
       "type": "object",
       "required": [
-        "language",
-        "framework",
-        "version"
+        "language"
       ]
     },
     "Config": {
       "properties": {
         "name": {
           "type": "string"
+        },
+        "vcs": {
+          "$ref": "#/$defs/VCS"
+        },
+        "pipeline": {
+          "$ref": "#/$defs/Pipelines"
         },
         "application": {
           "$ref": "#/$defs/Application"
@@ -47,40 +42,25 @@
             "$ref": "#/$defs/Environment"
           },
           "type": "object"
-        },
-        "ci": {
-          "type": "string",
-          "enum": [
-            "github"
-          ]
         }
       },
       "additionalProperties": false,
       "type": "object",
       "required": [
         "application",
-        "environments",
-        "ci"
+        "environments"
       ]
     },
     "Deploy": {
       "properties": {
         "target": {
-          "type": "string",
-          "enum": [
-            "local",
-            "aws"
-          ]
+          "type": "string"
         },
         "regions": {
           "items": {
-            "type": "string",
-            "enum": [
-              "us-east-1"
-            ]
+            "type": "string"
           },
-          "type": "array",
-          "uniqueItems": true
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -95,12 +75,7 @@
           "$ref": "#/$defs/Deploy"
         },
         "orchestrator": {
-          "type": "string",
-          "enum": [
-            "kubernetes",
-            "compose",
-            "swarm"
-          ]
+          "$ref": "#/$defs/Orchestrator"
         }
       },
       "additionalProperties": false,
@@ -110,20 +85,95 @@
         "orchestrator"
       ]
     },
+    "Framework": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "version"
+      ]
+    },
+    "Language": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "framework": {
+          "$ref": "#/$defs/Framework"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "framework"
+      ]
+    },
+    "Orchestrator": {
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "type"
+      ]
+    },
+    "Pipelines": {
+      "properties": {
+        "provider": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "repo": {
+          "type": "string"
+        },
+        "lint": {
+          "type": "boolean"
+        },
+        "test": {
+          "type": "boolean"
+        },
+        "coverage": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "provider",
+        "owner",
+        "repo",
+        "lint",
+        "test",
+        "coverage"
+      ]
+    },
     "Service": {
       "properties": {
         "name": {
           "type": "string"
         },
         "type": {
-          "type": "string",
-          "enum": [
-            "http",
-            "postgres",
-            "mysql",
-            "mongo",
-            "redis"
-          ]
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
         },
         "version": {
           "type": "string"
@@ -132,6 +182,9 @@
           "type": "integer"
         },
         "env": {
+          "additionalProperties": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -140,6 +193,30 @@
       "required": [
         "name",
         "type"
+      ]
+    },
+    "VCS": {
+      "properties": {
+        "provider": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "repo": {
+          "type": "string"
+        },
+        "visibility": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "provider",
+        "owner",
+        "repo",
+        "visibility"
       ]
     }
   }

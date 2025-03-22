@@ -17,7 +17,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Write the JSON Schema to a file.
 	if err := os.WriteFile("schemas/instascale.schema.json", data, 0644); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "Error writing schema file: %v\n", err)
 		os.Exit(1)
