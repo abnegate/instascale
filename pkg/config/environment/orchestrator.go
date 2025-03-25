@@ -32,14 +32,29 @@ func (o *Orchestrator) JSONSchema() *jsonschema.Schema {
 	return &jsonschema.Schema{
 		Type:        "object",
 		Description: "Orchestrator configuration.",
-		Properties: converters.ToOrderedProps(map[string]*jsonschema.Schema{
-			"type": {
+		OneOf: []*jsonschema.Schema{
+			{
 				Type:        "string",
-				Description: "The orchestrator type.",
+				Description: "The orchestrator.",
 				Enum:        converters.ToAnySlice(OrchestratorTypes),
 			},
-		}),
-		Required: []string{"type"},
+			{
+				Type:        "object",
+				Description: "The orchestrator.",
+				Properties: converters.ToOrderedProps(map[string]*jsonschema.Schema{
+					"type": {
+						Type:        "string",
+						Description: "The orchestrator type.",
+						Enum:        converters.ToAnySlice(OrchestratorTypes),
+					},
+					"version": {
+						Type:        "string",
+						Description: "The language-specific framework version.",
+					},
+				}),
+				Required: []string{"type"},
+			},
+		},
 	}
 }
 
