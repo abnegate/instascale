@@ -9,7 +9,7 @@ import (
 // Application nests application-specific configuration.
 type Application struct {
 	Language Language  `yaml:"language" json:"language"`
-	Services []Service `yaml:"services,omitempty" json:"services,omitempty"`
+	Services []Service `yaml:"services" json:"services"`
 	Version  string    `yaml:"version,omitempty" json:"version,omitempty"`
 }
 
@@ -28,7 +28,10 @@ func (a *Application) JSONSchema() *jsonschema.Schema {
 				Items:       (&Service{}).JSONSchema(),
 			},
 		}),
-		Required: []string{"language", "services"},
+		Required: []string{
+			"language",
+			"services",
+		},
 	}
 }
 
