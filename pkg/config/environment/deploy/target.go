@@ -13,7 +13,7 @@ var Targets = []Target{TargetLocal, TargetAWS}
 func allowedRegions(target Target) []Region {
 	switch target {
 	case TargetAWS:
-		return []Region{RegionAWSUSEast1}
+		return AWSREgions
 	default:
 		return nil
 	}
