@@ -64,18 +64,23 @@ func (c *Config) Validate() error {
 	if c.Name == "" {
 		return fmt.Errorf("name is required")
 	}
-	if err := c.VCS.Validate(); err != nil {
-		return err
-	}
-	if err := c.Pipeline.Validate(); err != nil {
-		return err
-	}
 	if err := c.Application.Validate(); err != nil {
 		return err
 	}
 	for _, env := range c.Environments {
 		if err := env.Validate(); err != nil {
 			return fmt.Errorf("invalid environment %s: %s", c.Name, err)
+		}
+	}
+
+	if c.VCS != nil {
+		if err := c.VCS.Validate(); err != nil {
+			return err
+		}
+	}
+	if c.Pipeline != nil {
+		if err := c.Pipeline.Validate(); err != nil {
+			return err
 		}
 	}
 	return nil
