@@ -1,0 +1,19 @@
+name: test-project
+
+application:
+  language:
+    name: javascript
+    version: es6
+    framework: express
+  version: 1.0.0
+  services:
+    - name: health-api
+      type: http
+      description: REST API serving health status
+      port: 8080
+
+environments:
+  dev:
+    deploy:
+      target: local
+    orchestrator: compose

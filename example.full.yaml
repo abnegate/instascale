@@ -1,0 +1,77 @@
+name: test-project
+
+pipeline:
+  provider: github
+  owner: BestOrg
+  repo: BestRepo
+  lint: true
+  test: true
+  coverage: true
+
+vcs:
+  provider: github
+  owner: BestOrg
+  repo: BestRepo
+  visibility: public
+
+application:
+  language:
+    name: javascript
+    version: es6
+    framework:
+      name: express
+      version: 4.21.2
+  version: 1.0.0
+  services:
+    - name: health-api
+      type: http
+      description: REST API serving health status
+      version: 1.0.0
+      port: 8080
+    - name: database
+      type: postgres
+      version: 15.*
+      env:
+        POSTGRES_USER: $POSTGRES_USER
+        POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    - name: cache
+      type: redis
+      version: 6.0.1
+
+environments:
+  dev:
+    deploy:
+      target: local
+    orchestrator:
+      type: compose
+  staging:
+    deploy:
+      target: aws
+      nodes:
+        - type: t4g.small
+          services:
+            - name: database
+              min: 1
+              max: 1
+          min: 1
+          max: 1
+        - type: t4g.small
+          services:
+            - name: database
+              min: 1
+              max: 1
+            - name: cache
+              min: 1
+              max: 1
+          min: 1
+          max: 1
+      regions:
+        - us-east-1
+    orchestrator:
+      type: kubernetes
+  prod:
+    deploy:
+      target: aws
+      regions:
+        - us-east-1
+        - us-west-1
