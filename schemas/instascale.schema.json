@@ -1,41 +1,11 @@
 {
   "properties": {
-    "name": {
-      "type": "string",
-      "description": "The project name."
-    },
-    "vcs": {
-      "properties": {
-        "provider": {
-          "type": "string",
-          "enum": [
-            "github"
-          ],
-          "description": "The VCS provider."
-        },
-        "owner": {
-          "type": "string",
-          "description": "The repository owner."
-        },
-        "repo": {
-          "type": "string",
-          "description": "The repository name."
-        },
-        "visibility": {
-          "type": "string",
-          "description": "The repository visibility."
-        }
-      },
-      "type": "object",
-      "required": [
-        "provider",
-        "owner",
-        "repo"
-      ],
-      "description": "Version Control System configuration."
-    },
     "pipeline": {
       "properties": {
+        "lint": {
+          "type": "boolean",
+          "description": "Enable linting."
+        },
         "test": {
           "type": "boolean",
           "description": "Enable testing."
@@ -59,10 +29,6 @@
         "repo": {
           "type": "string",
           "description": "The repository name."
-        },
-        "lint": {
-          "type": "boolean",
-          "description": "Enable linting."
         }
       },
       "type": "object",
@@ -75,10 +41,6 @@
     },
     "application": {
       "properties": {
-        "version": {
-          "type": "string",
-          "description": "The application version."
-        },
         "services": {
           "items": {
             "allOf": [
@@ -98,6 +60,23 @@
               }
             ],
             "properties": {
+              "port": {
+                "type": "integer",
+                "maximum": 65535,
+                "minimum": 1024,
+                "description": "The service port."
+              },
+              "env": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object",
+                "description": "The service environment variables."
+              },
+              "name": {
+                "type": "string",
+                "description": "The service name."
+              },
               "type": {
                 "type": "string",
                 "enum": [
@@ -116,23 +95,6 @@
               "version": {
                 "type": "string",
                 "description": "The service version."
-              },
-              "port": {
-                "type": "integer",
-                "maximum": 65535,
-                "minimum": 1024,
-                "description": "The service port."
-              },
-              "env": {
-                "additionalProperties": {
-                  "type": "string"
-                },
-                "type": "object",
-                "description": "The service environment variables."
-              },
-              "name": {
-                "type": "string",
-                "description": "The service name."
               }
             },
             "type": "object",
@@ -143,6 +105,10 @@
           },
           "type": "array",
           "description": "List of services in the application."
+        },
+        "version": {
+          "type": "string",
+          "description": "The application version."
         }
       },
       "type": "object",
@@ -188,7 +154,8 @@
                   "properties": {
                     "regions": {
                       "enum": [
-                        "us-east-1"
+                        "us-east-1",
+                        "us-west-1"
                       ]
                     }
                   },
@@ -223,21 +190,40 @@
             "description": "Deploy configuration."
           },
           "orchestrator": {
-            "properties": {
-              "type": {
+            "oneOf": [
+              {
                 "type": "string",
                 "enum": [
                   "kubernetes",
                   "compose",
                   "swarm"
                 ],
-                "description": "The orchestrator type."
+                "description": "The orchestrator."
+              },
+              {
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "kubernetes",
+                      "compose",
+                      "swarm"
+                    ],
+                    "description": "The orchestrator type."
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "The language-specific framework version."
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "type"
+                ],
+                "description": "The orchestrator."
               }
-            },
-            "type": "object",
-            "required": [
-              "type"
             ],
+            "type": "object",
             "description": "Orchestrator configuration."
           }
         },
@@ -250,8 +236,47 @@
       },
       "type": "object",
       "description": "The project environments."
+    },
+    "name": {
+      "type": "string",
+      "description": "The project name."
+    },
+    "vcs": {
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": [
+            "github"
+          ],
+          "description": "The VCS provider."
+        },
+        "owner": {
+          "type": "string",
+          "description": "The repository owner."
+        },
+        "repo": {
+          "type": "string",
+          "description": "The repository name."
+        },
+        "visibility": {
+          "type": "string",
+          "description": "The repository visibility."
+        }
+      },
+      "type": "object",
+      "required": [
+        "provider",
+        "owner",
+        "repo"
+      ],
+      "description": "Version Control System configuration."
     }
   },
   "type": "object",
+  "required": [
+    "name",
+    "application",
+    "environments"
+  ],
   "description": "Project configuration."
 }
