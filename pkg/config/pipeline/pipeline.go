@@ -90,6 +90,6 @@ func validateProvider(p Provider) error {
 	case ProviderGitHub, ProviderGitLab:
 		return nil
 	default:
-		return fmt.Errorf("invalid value for provider: %q", p)
+		return fmt.Errorf("invalid pipeline provider: %q", p)
 	}
 }

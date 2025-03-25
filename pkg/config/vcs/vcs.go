@@ -63,6 +63,6 @@ func (v *VCS) Validate() error {
 	case ProviderGitHub:
 		return nil
 	default:
-		return fmt.Errorf("invalid provider: %s", v.Provider)
+		return fmt.Errorf("invalid vcs provider: %s", v.Provider)
 	}
 }

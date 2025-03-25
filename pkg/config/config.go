@@ -12,11 +12,11 @@ import (
 
 // Config defines the project configuration.
 type Config struct {
-	Name         string                             `yaml:"name,omitempty" json:"name,omitempty"`
-	VCS          vcs.VCS                            `yaml:"vcs,omitempty" json:"vcs,omitempty"`
-	Pipeline     pipeline.Pipelines                 `yaml:"pipeline,omitempty" json:"pipeline,omitempty"`
+	Name         string                             `yaml:"name" json:"name"`
 	Application  application.Application            `yaml:"application" json:"application"`
 	Environments map[string]environment.Environment `yaml:"environments" json:"environments"`
+	VCS          *vcs.VCS                           `yaml:"vcs,omitempty" json:"vcs,omitempty"`
+	Pipeline     *pipeline.Pipelines                `yaml:"pipeline,omitempty" json:"pipeline,omitempty"`
 }
 
 // JSONSchema returns a JSON schema for the Config configuration.
@@ -38,6 +38,11 @@ func (c *Config) JSONSchema() *jsonschema.Schema {
 				AdditionalProperties: (&environment.Environment{}).JSONSchema(),
 			},
 		}),
+		Required: []string{
+			"name",
+			"application",
+			"environments",
+		},
 	}
 }
 
