@@ -36,8 +36,8 @@ func (a *Application) JSONSchema() *jsonschema.Schema {
 func (a *Application) SetDefaults() {
 	a.Language.SetDefaults()
 
-	for _, service := range a.Services {
-		service.SetDefaults()
+	for i := range a.Services {
+		a.Services[i].SetDefaults()
 	}
 
 	if a.Version == "" {
@@ -65,9 +65,9 @@ func validateLanguage(l Language) error {
 }
 
 func validateServices(s []Service) error {
-	for _, svc := range s {
-		if err := svc.Validate(); err != nil {
-			return fmt.Errorf("invalid service %q: %w", svc.Name, err)
+	for i := range s {
+		if err := s[i].Validate(); err != nil {
+			return fmt.Errorf("invalid service %q: %w", s[i].Name, err)
 		}
 	}
 	return nil
