@@ -46,6 +46,19 @@ func (c *Config) JSONSchema() *jsonschema.Schema {
 	}
 }
 
+// SetDefaults sets the default values for the configuration.
+func (c *Config) SetDefaults() {
+	c.Application.SetDefaults()
+
+	for k, e := range c.Environments {
+		e.SetDefaults()
+		c.Environments[k] = e
+	}
+
+	c.VCS.SetDefaults()
+	c.Pipeline.SetDefaults()
+}
+
 // Validate calls the Validate methods on nested sections.
 func (c *Config) Validate() error {
 	if c.Name == "" {
