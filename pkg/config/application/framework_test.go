@@ -7,6 +7,15 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+func TestFramework_JSONSchema(t *testing.T) {
+	t.Run("Schema generation", func(t *testing.T) {
+		f := &Framework{}
+		schema := f.JSONSchema()
+		assert.NotNil(t, schema)
+		assert.Equal(t, "Framework to use for the application.", schema.Description)
+	})
+}
+
 func TestFramework_UnmarshalYAML(t *testing.T) {
 	t.Run("Unmarshal as string", func(t *testing.T) {
 		var f Framework
@@ -43,7 +52,7 @@ func TestFramework_SetDefaults(t *testing.T) {
 
 	t.Run("Does not overwrite existing version", func(t *testing.T) {
 		f := Framework{
-			Name: FrameworkExpress,
+			Name:    FrameworkExpress,
 			Version: "4.16.0",
 		}
 		f.SetDefaults()
@@ -68,14 +77,5 @@ func TestFramework_Validate(t *testing.T) {
 		f := Framework{Name: "some-other-framework", Version: "1.0.0"}
 		err := f.Validate()
 		assert.Error(t, err)
-	})
-}
-
-func TestFramework_JSONSchema(t *testing.T) {
-	t.Run("Schema generation", func(t *testing.T) {
-		f := &Framework{}
-		schema := f.JSONSchema()
-		assert.NotNil(t, schema)
-		assert.Equal(t, "Framework to use for the application.", schema.Description)
 	})
 }

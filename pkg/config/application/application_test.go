@@ -6,6 +6,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestApplication_JSONSchema(t *testing.T) {
+	t.Run("Schema generation", func(t *testing.T) {
+		app := &Application{}
+		schema := app.JSONSchema()
+		assert.NotNil(t, schema)
+		assert.Equal(t, "Application configuration.", schema.Description)
+
+		_, hasVersion := schema.Properties.Get("version")
+		assert.True(t, hasVersion, "Expected 'version' property in schema")
+
+		_, hasServices := schema.Properties.Get("services")
+		assert.True(t, hasServices, "Expected 'services' property in schema")
+	})
+}
+
 func TestApplication_SetDefaults(t *testing.T) {
 	t.Run("Sets default version when empty", func(t *testing.T) {
 		app := Application{}
@@ -94,20 +109,5 @@ func TestApplication_Validate(t *testing.T) {
 		}
 		err := app.Validate()
 		assert.Error(t, err)
-	})
-}
-
-func TestApplication_JSONSchema(t *testing.T) {
-	t.Run("Schema generation", func(t *testing.T) {
-		app := &Application{}
-		schema := app.JSONSchema()
-		assert.NotNil(t, schema)
-		assert.Equal(t, "Application configuration.", schema.Description)
-
-		_, hasVersion := schema.Properties.Get("version")
-		assert.True(t, hasVersion, "Expected 'version' property in schema")
-
-		_, hasServices := schema.Properties.Get("services")
-		assert.True(t, hasServices, "Expected 'services' property in schema")
 	})
 }
