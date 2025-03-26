@@ -55,8 +55,12 @@ func (c *Config) SetDefaults() {
 		c.Environments[k] = e
 	}
 
-	c.VCS.SetDefaults()
-	c.Pipeline.SetDefaults()
+	if c.VCS != nil {
+		c.VCS.SetDefaults()
+	}
+	if c.Pipeline != nil {
+		c.Pipeline.SetDefaults()
+	}
 }
 
 // Validate calls the Validate methods on nested sections.
