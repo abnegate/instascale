@@ -1,15 +1,41 @@
 {
   "properties": {
+    "name": {
+      "type": "string",
+      "description": "The project name."
+    },
+    "vcs": {
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": [
+            "github"
+          ],
+          "description": "The VCS provider."
+        },
+        "owner": {
+          "type": "string",
+          "description": "The repository owner."
+        },
+        "repo": {
+          "type": "string",
+          "description": "The repository name."
+        },
+        "visibility": {
+          "type": "string",
+          "description": "The repository visibility."
+        }
+      },
+      "type": "object",
+      "required": [
+        "provider",
+        "owner",
+        "repo"
+      ],
+      "description": "Version Control System configuration."
+    },
     "pipeline": {
       "properties": {
-        "lint": {
-          "type": "boolean",
-          "description": "Enable linting."
-        },
-        "test": {
-          "type": "boolean",
-          "description": "Enable testing."
-        },
         "coverage": {
           "type": "boolean",
           "description": "Enable coverage."
@@ -29,6 +55,14 @@
         "repo": {
           "type": "string",
           "description": "The repository name."
+        },
+        "lint": {
+          "type": "boolean",
+          "description": "Enable linting."
+        },
+        "test": {
+          "type": "boolean",
+          "description": "Enable testing."
         }
       },
       "type": "object",
@@ -41,6 +75,10 @@
     },
     "application": {
       "properties": {
+        "version": {
+          "type": "string",
+          "description": "The application version."
+        },
         "services": {
           "items": {
             "allOf": [
@@ -60,10 +98,14 @@
               }
             ],
             "properties": {
+              "version": {
+                "type": "string",
+                "description": "The service version."
+              },
               "port": {
                 "type": "integer",
                 "maximum": 65535,
-                "minimum": 1024,
+                "minimum": 1,
                 "description": "The service port."
               },
               "env": {
@@ -91,10 +133,6 @@
               "description": {
                 "type": "string",
                 "description": "The service description."
-              },
-              "version": {
-                "type": "string",
-                "description": "The service version."
               }
             },
             "type": "object",
@@ -105,10 +143,6 @@
           },
           "type": "array",
           "description": "List of services in the application."
-        },
-        "version": {
-          "type": "string",
-          "description": "The application version."
         }
       },
       "type": "object",
@@ -202,6 +236,10 @@
               },
               {
                 "properties": {
+                  "version": {
+                    "type": "string",
+                    "description": "The language-specific framework version."
+                  },
                   "type": {
                     "type": "string",
                     "enum": [
@@ -210,10 +248,6 @@
                       "swarm"
                     ],
                     "description": "The orchestrator type."
-                  },
-                  "version": {
-                    "type": "string",
-                    "description": "The language-specific framework version."
                   }
                 },
                 "type": "object",
@@ -236,40 +270,6 @@
       },
       "type": "object",
       "description": "The project environments."
-    },
-    "name": {
-      "type": "string",
-      "description": "The project name."
-    },
-    "vcs": {
-      "properties": {
-        "provider": {
-          "type": "string",
-          "enum": [
-            "github"
-          ],
-          "description": "The VCS provider."
-        },
-        "owner": {
-          "type": "string",
-          "description": "The repository owner."
-        },
-        "repo": {
-          "type": "string",
-          "description": "The repository name."
-        },
-        "visibility": {
-          "type": "string",
-          "description": "The repository visibility."
-        }
-      },
-      "type": "object",
-      "required": [
-        "provider",
-        "owner",
-        "repo"
-      ],
-      "description": "Version Control System configuration."
     }
   },
   "type": "object",

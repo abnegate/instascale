@@ -7,17 +7,27 @@ import (
 	"os"
 )
 
-func main() {
+// GenerateSchemaFile writes the Config JSON schema to the specified file.
+func GenerateSchemaFile(filename string) error {
 	schema := (&config.Config{}).JSONSchema()
 
 	data, err := json.MarshalIndent(schema, "", "  ")
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Error marshaling schema: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("error marshaling schema: %w", err)
 	}
 
-	if err := os.WriteFile("schemas/instascale.schema.json", data, 0644); err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Error writing schema file: %v\n", err)
+	if err := os.WriteFile(filename, data, 0644); err != nil {
+		return fmt.Errorf("error writing schema file: %w", err)
+	}
+
+	return nil
+}
+
+func main() {
+	const outFile = "schemas/instascale.schema.json"
+
+	if err := GenerateSchemaFile(outFile); err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
 	}
 
