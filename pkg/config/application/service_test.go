@@ -47,8 +47,11 @@ type: http
 env:
   KEY: $TEST_ENV
 `
-		os.Setenv("TEST_ENV", "test-value")
-		defer os.Unsetenv("TEST_ENV")
+		_ = os.Setenv("TEST_ENV", "test-value")
+
+		defer func() {
+			_ = os.Unsetenv("TEST_ENV")
+		}()
 
 		var s Service
 		err := yaml.Unmarshal([]byte(yml), &s)

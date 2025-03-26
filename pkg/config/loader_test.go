@@ -8,8 +8,8 @@ import (
 
 func TestLoader(t *testing.T) {
 	t.Run("Valid config", func(t *testing.T) {
-		os.Setenv("POSTGRES_USER", "test")
-		os.Setenv("POSTGRES_PASSWORD", "test")
+		_ = os.Setenv("POSTGRES_USER", "test")
+		_ = os.Setenv("POSTGRES_PASSWORD", "test")
 
 		cfg, err := LoadConfig("../../example.full.yaml")
 
@@ -31,11 +31,14 @@ func TestLoader(t *testing.T) {
 	t.Run("Invalid config", func(t *testing.T) {
 		tmpFile, err := os.CreateTemp("", "invalid-config.yaml")
 		assert.NoError(t, err)
-		defer os.Remove(tmpFile.Name())
+
+		defer func(name string) {
+			_ = os.Remove(name)
+		}(tmpFile.Name())
 
 		_, err = tmpFile.Write([]byte("name: test"))
 		assert.NoError(t, err)
-		tmpFile.Close()
+		_ = tmpFile.Close()
 
 		_, err = LoadConfig(tmpFile.Name())
 		assert.Error(t, err)
@@ -44,11 +47,14 @@ func TestLoader(t *testing.T) {
 	t.Run("Invalid YAML", func(t *testing.T) {
 		tmpFile, err := os.CreateTemp("", "invalid-config.yaml")
 		assert.NoError(t, err)
-		defer os.Remove(tmpFile.Name())
+
+		defer func(name string) {
+			_ = os.Remove(name)
+		}(tmpFile.Name())
 
 		_, err = tmpFile.Write([]byte("not: : valid: : yaml"))
 		assert.NoError(t, err)
-		tmpFile.Close()
+		_ = tmpFile.Close()
 
 		_, err = LoadConfig(tmpFile.Name())
 		assert.Error(t, err)

@@ -195,7 +195,7 @@ func validateVersion(v string) error {
 }
 
 func validatePort(p uint16) error {
-	if p < 1 || p > 65535 {
+	if p == 0 {
 		return fmt.Errorf("port %d is out of range, must be between 1 and 65535", p)
 	}
 	return nil

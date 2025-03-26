@@ -118,24 +118,34 @@ func (l *Language) SetDefaults() {
 
 // Validate checks that the Language configuration is valid.
 func (l *Language) Validate() error {
+	var found bool
 	for _, languageName := range LanguageNames {
 		if l.Name == languageName {
+			found = true
 			break
 		}
+	}
+	if !found {
 		return fmt.Errorf("language %q is not allowed", l.Name)
 	}
 
 	for _, allowedFramework := range allowedFrameworksForLanguage(l) {
 		if l.Framework.Name == allowedFramework {
+			found = true
 			break
 		}
+	}
+	if !found {
 		return fmt.Errorf("framework %q is not allowed for language %q", l.Framework.Name, l.Name)
 	}
-	
+
 	for _, allowedVersion := range allowedVersionsForLanguage(l) {
 		if l.Version == allowedVersion {
+			found = true
 			break
 		}
+	}
+	if !found {
 		return fmt.Errorf("version %q is not allowed for language %q", l.Version, l.Name)
 	}
 
