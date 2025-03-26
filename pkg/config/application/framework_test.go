@@ -25,6 +25,13 @@ func TestFramework_UnmarshalYAML(t *testing.T) {
 		assert.Equal(t, FrameworkExpress, f.Name)
 		assert.Equal(t, FrameworkExpressLatest, f.Version) // Because 4.17.1 == FrameworkExpressLatest
 	})
+
+	t.Run("Unmarshal as invalid type", func(t *testing.T) {
+		var f Framework
+		yml := `100`
+		err := yaml.Unmarshal([]byte(yml), &f)
+		assert.Error(t, err)
+	})
 }
 
 func TestFramework_SetDefaults(t *testing.T) {
@@ -35,7 +42,10 @@ func TestFramework_SetDefaults(t *testing.T) {
 	})
 
 	t.Run("Does not overwrite existing version", func(t *testing.T) {
-		f := Framework{Name: FrameworkExpress, Version: "4.16.0"}
+		f := Framework{
+			Name: FrameworkExpress,
+			Version: "4.16.0",
+		}
 		f.SetDefaults()
 		assert.Equal(t, "4.16.0", f.Version)
 	})

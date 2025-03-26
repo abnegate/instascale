@@ -15,7 +15,13 @@ const (
 	FrameworkExpressLatest string        = "4.17.1"
 )
 
-var Frameworks = []FrameworkName{FrameworkExpress}
+var Frameworks = []FrameworkName{
+	FrameworkExpress,
+}
+
+var JavaScriptFrameworks = []FrameworkName{
+	FrameworkExpress,
+}
 
 // Framework defines the application framework.
 type Framework struct {
