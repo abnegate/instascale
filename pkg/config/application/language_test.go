@@ -92,9 +92,12 @@ func TestLanguage_Validate(t *testing.T) {
 
 	t.Run("Invalid version for language", func(t *testing.T) {
 		l := Language{
-			Name:      LanguageJavaScript,
-			Version:   "es7",
-			Framework: Framework{Name: FrameworkExpress, Version: "4.17.1"},
+			Name:    LanguageJavaScript,
+			Version: "es7",
+			Framework: Framework{
+				Name:    FrameworkExpress,
+				Version: "4.16.0",
+			},
 		}
 		err := l.Validate()
 		assert.Error(t, err)
