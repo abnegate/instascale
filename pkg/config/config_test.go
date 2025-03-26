@@ -2,6 +2,8 @@ package config
 
 import (
 	"instascale/pkg/config/environment/deploy"
+	"instascale/pkg/config/pipeline"
+	"instascale/pkg/config/vcs"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -9,15 +11,36 @@ import (
 	"instascale/pkg/config/environment"
 )
 
+func TestConfig_JSONSchema(t *testing.T) {
+	t.Run("Schema generation", func(t *testing.T) {
+		cfg := &Config{}
+		schema := cfg.JSONSchema()
+		assert.NotNil(t, schema)
+		assert.Equal(t, "Project configuration.", schema.Description)
+
+		_, hasName := schema.Properties.Get("name")
+		assert.True(t, hasName, "Expected 'name' property in schema")
+
+		_, hasApplication := schema.Properties.Get("application")
+		assert.True(t, hasApplication, "Expected 'application' property in schema")
+
+		_, hasEnvironments := schema.Properties.Get("environments")
+		assert.True(t, hasEnvironments, "Expected 'environments' property in schema")
+	})
+}
+
 func TestConfig_Validate(t *testing.T) {
 	t.Run("Valid config", func(t *testing.T) {
 		cfg := Config{
 			Name: "my-project",
 			Application: application.Application{
 				Language: application.Language{
-					Name:      application.LanguageJavaScript,
-					Version:   application.LanguageVersionES6,
-					Framework: application.Framework{Name: application.FrameworkExpress, Version: application.FrameworkExpressLatest},
+					Name:    application.LanguageJavaScript,
+					Version: application.LanguageVersionES6,
+					Framework: application.Framework{
+						Name:    application.FrameworkExpress,
+						Version: application.FrameworkExpressLatest,
+					},
 				},
 				Services: []application.Service{
 					{
@@ -41,7 +64,7 @@ func TestConfig_Validate(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	t.Run("Missing project name", func(t *testing.T) {
+	t.Run("Invalid name", func(t *testing.T) {
 		cfg := Config{}
 		err := cfg.Validate()
 		assert.Error(t, err)
@@ -50,6 +73,16 @@ func TestConfig_Validate(t *testing.T) {
 	t.Run("Invalid environment", func(t *testing.T) {
 		cfg := Config{
 			Name: "my-project",
+			Application: application.Application{
+				Language: application.Language{
+					Name:    application.LanguageJavaScript,
+					Version: application.LanguageVersionES6,
+					Framework: application.Framework{
+						Name:    application.FrameworkExpress,
+						Version: application.FrameworkExpressLatest,
+					},
+				},
+			},
 			Environments: map[string]environment.Environment{
 				"dev": {
 					Deploy: deploy.Deploy{
@@ -63,22 +96,60 @@ func TestConfig_Validate(t *testing.T) {
 		err := cfg.Validate()
 		assert.Error(t, err)
 	})
-}
 
-func TestConfig_JSONSchema(t *testing.T) {
-	t.Run("Schema generation", func(t *testing.T) {
-		cfg := &Config{}
-		schema := cfg.JSONSchema()
-		assert.NotNil(t, schema)
-		assert.Equal(t, "Project configuration.", schema.Description)
+	t.Run("Invalid application", func(t *testing.T) {
+		cfg := Config{
+			Name: "my-project",
+			Application: application.Application{
+				Language: application.Language{
+					Name: "invalid-language",
+				},
+			},
+		}
+		err := cfg.Validate()
+		assert.Error(t, err)
+	})
 
-		_, hasName := schema.Properties.Get("name")
-		assert.True(t, hasName, "Expected 'name' property in schema")
+	t.Run("Invalid pipeline", func(t *testing.T) {
+		cfg := Config{
+			Name: "my-project",
+			Application: application.Application{
+				Language: application.Language{
+					Name:    application.LanguageJavaScript,
+					Version: application.LanguageVersionES6,
+					Framework: application.Framework{
+						Name:    application.FrameworkExpress,
+						Version: application.FrameworkExpressLatest,
+					},
+				},
+			},
 
-		_, hasApplication := schema.Properties.Get("application")
-		assert.True(t, hasApplication, "Expected 'application' property in schema")
+			Pipeline: &pipeline.Pipeline{
+				Provider: "invalid-provider",
+			},
+		}
+		err := cfg.Validate()
+		assert.Error(t, err)
+	})
 
-		_, hasEnvironments := schema.Properties.Get("environments")
-		assert.True(t, hasEnvironments, "Expected 'environments' property in schema")
+	t.Run("Invalid VCS", func(t *testing.T) {
+		cfg := Config{
+			Name: "my-project",
+			Application: application.Application{
+				Language: application.Language{
+					Name:    application.LanguageJavaScript,
+					Version: application.LanguageVersionES6,
+					Framework: application.Framework{
+						Name:    application.FrameworkExpress,
+						Version: application.FrameworkExpressLatest,
+					},
+				},
+			},
+			VCS: &vcs.VCS{
+				Provider: "invalid-provider",
+			},
+		}
+		err := cfg.Validate()
+		assert.Error(t, err)
 	})
 }

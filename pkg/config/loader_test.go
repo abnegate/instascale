@@ -7,7 +7,7 @@ import (
 )
 
 func TestLoader(t *testing.T) {
-	t.Run("Loads config", func(t *testing.T) {
+	t.Run("Valid config", func(t *testing.T) {
 		os.Setenv("POSTGRES_USER", "test")
 		os.Setenv("POSTGRES_PASSWORD", "test")
 
@@ -23,23 +23,34 @@ func TestLoader(t *testing.T) {
 		assert.NotEmpty(t, cfg.Application.Language.Framework, "Expected framework to be loaded")
 	})
 
-	t.Run("Fails to load config", func(t *testing.T) {
+	t.Run("Invalid path", func(t *testing.T) {
 		_, err := LoadConfig("non-existent.yml")
-		assert.Error(t, err, "Expected an error for missing file")
+		assert.Error(t, err)
 	})
 
-	t.Run("Invalid YAML", func(t *testing.T) {
-		tmpFile, err := os.CreateTemp("", "invalid-config-*.yaml")
+	t.Run("Invalid config", func(t *testing.T) {
+		tmpFile, err := os.CreateTemp("", "invalid-config.yaml")
 		assert.NoError(t, err)
 		defer os.Remove(tmpFile.Name())
 
-		// Write some garbage YAML
+		_, err = tmpFile.Write([]byte("name: test"))
+		assert.NoError(t, err)
+		tmpFile.Close()
+
+		_, err = LoadConfig(tmpFile.Name())
+		assert.Error(t, err)
+	})
+
+	t.Run("Invalid YAML", func(t *testing.T) {
+		tmpFile, err := os.CreateTemp("", "invalid-config.yaml")
+		assert.NoError(t, err)
+		defer os.Remove(tmpFile.Name())
+
 		_, err = tmpFile.Write([]byte("not: : valid: : yaml"))
 		assert.NoError(t, err)
 		tmpFile.Close()
 
 		_, err = LoadConfig(tmpFile.Name())
-		assert.Error(t, err, "Expected an error for invalid YAML")
+		assert.Error(t, err)
 	})
-
 }

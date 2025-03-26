@@ -7,6 +7,21 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+func TestLanguage_JSONSchema(t *testing.T) {
+	t.Run("Schema generation", func(t *testing.T) {
+		l := &Language{}
+		schema := l.JSONSchema()
+		assert.NotNil(t, schema)
+		assert.Equal(t, "Language configuration.", schema.Description)
+
+		_, hasName := schema.Properties.Get("name")
+		assert.True(t, hasName, "Expected 'name' property in schema")
+
+		_, hasFramework := schema.Properties.Get("framework")
+		assert.True(t, hasFramework, "Expected 'framework' property in schema")
+	})
+}
+
 func TestLanguage_UnmarshalYAML(t *testing.T) {
 	t.Run("Unmarshal as string", func(t *testing.T) {
 		var l Language
@@ -25,6 +40,13 @@ func TestLanguage_UnmarshalYAML(t *testing.T) {
 		assert.Equal(t, LanguageJavaScript, l.Name)
 		assert.Equal(t, LanguageVersionES6, l.Version)
 		assert.Equal(t, FrameworkExpress, l.Framework.Name)
+	})
+
+	t.Run("Unmarshal as invalid type", func(t *testing.T) {
+		var l Language
+		yml := `100`
+		err := yaml.Unmarshal([]byte(yml), &l)
+		assert.Error(t, err)
 	})
 }
 
@@ -76,20 +98,5 @@ func TestLanguage_Validate(t *testing.T) {
 		}
 		err := l.Validate()
 		assert.Error(t, err)
-	})
-}
-
-func TestLanguage_JSONSchema(t *testing.T) {
-	t.Run("Schema generation", func(t *testing.T) {
-		l := &Language{}
-		schema := l.JSONSchema()
-		assert.NotNil(t, schema)
-		assert.Equal(t, "Language configuration.", schema.Description)
-
-		_, hasName := schema.Properties.Get("name")
-		assert.True(t, hasName, "Expected 'name' property in schema")
-
-		_, hasFramework := schema.Properties.Get("framework")
-		assert.True(t, hasFramework, "Expected 'framework' property in schema")
 	})
 }
