@@ -23,6 +23,13 @@ func TestOrchestrator_UnmarshalYAML(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, OrchestratorTypeSwarm, o.Type)
 	})
+
+	t.Run("Unmarshal as invalid type", func(t *testing.T) {
+		var o Orchestrator
+		yml := `100`
+		err := yaml.Unmarshal([]byte(yml), &o)
+		assert.Error(t, err)
+	})
 }
 
 func TestOrchestrator_SetDefaults(t *testing.T) {
