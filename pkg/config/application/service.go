@@ -64,7 +64,7 @@ func (s *Service) JSONSchema() *jsonschema.Schema {
 			"port": {
 				Type:        "integer",
 				Description: "The service port.",
-				Minimum:     "1024",
+				Minimum:     "1",
 				Maximum:     "65535",
 			},
 			"env": {
@@ -195,8 +195,8 @@ func validateVersion(v string) error {
 }
 
 func validatePort(p uint16) error {
-	if p < 1024 || p > 65535 {
-		return fmt.Errorf("port %d is out of range, must be between 1024 and 65535", p)
+	if p < 1 || p > 65535 {
+		return fmt.Errorf("port %d is out of range, must be between 1 and 65535", p)
 	}
 	return nil
 }
