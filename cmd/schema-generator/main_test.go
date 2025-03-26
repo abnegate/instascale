@@ -17,7 +17,7 @@ func TestGenerateSchemaFile(t *testing.T) {
 
 		err := GenerateSchemaFile(outFile)
 		assert.NoError(t, err, "Expected no error generating schema")
-		
+
 		info, statErr := os.Stat(outFile)
 		assert.NoError(t, statErr, "Expected the schema file to be created")
 		assert.False(t, info.IsDir(), "Expected a file, not a directory")
@@ -38,6 +38,6 @@ func TestGenerateSchemaFile(t *testing.T) {
 
 		err := GenerateSchemaFile(dirPath)
 		require.Error(t, err, "Expected an error writing to a directory")
-		assert.Contains(t, err.Error(), "Error writing schema file", "Should wrap the write error")
+		assert.Contains(t, err.Error(), "error writing schema file", "Should wrap the write error")
 	})
 }
