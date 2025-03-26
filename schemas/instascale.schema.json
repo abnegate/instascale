@@ -1,84 +1,7 @@
 {
   "properties": {
-    "name": {
-      "type": "string",
-      "description": "The project name."
-    },
-    "vcs": {
-      "properties": {
-        "provider": {
-          "type": "string",
-          "enum": [
-            "github"
-          ],
-          "description": "The VCS provider."
-        },
-        "owner": {
-          "type": "string",
-          "description": "The repository owner."
-        },
-        "repo": {
-          "type": "string",
-          "description": "The repository name."
-        },
-        "visibility": {
-          "type": "string",
-          "description": "The repository visibility."
-        }
-      },
-      "type": "object",
-      "required": [
-        "provider",
-        "owner",
-        "repo"
-      ],
-      "description": "Version Control System configuration."
-    },
-    "pipeline": {
-      "properties": {
-        "coverage": {
-          "type": "boolean",
-          "description": "Enable coverage."
-        },
-        "provider": {
-          "type": "string",
-          "enum": [
-            "github",
-            "gitlab"
-          ],
-          "description": "The CI/CD provider."
-        },
-        "owner": {
-          "type": "string",
-          "description": "The repository owner."
-        },
-        "repo": {
-          "type": "string",
-          "description": "The repository name."
-        },
-        "lint": {
-          "type": "boolean",
-          "description": "Enable linting."
-        },
-        "test": {
-          "type": "boolean",
-          "description": "Enable testing."
-        }
-      },
-      "type": "object",
-      "required": [
-        "provider",
-        "owner",
-        "repo"
-      ],
-      "description": "CI/CD pipeline configuration."
-    },
     "application": {
       "properties": {
-        "version": {
-          "type": "string",
-          "description": "The application version."
-        },
         "services": {
           "items": {
             "allOf": [
@@ -98,15 +21,9 @@
               }
             ],
             "properties": {
-              "version": {
+              "description": {
                 "type": "string",
-                "description": "The service version."
-              },
-              "port": {
-                "type": "integer",
-                "maximum": 65535,
-                "minimum": 1,
-                "description": "The service port."
+                "description": "The service description."
               },
               "env": {
                 "additionalProperties": {
@@ -119,6 +36,12 @@
                 "type": "string",
                 "description": "The service name."
               },
+              "port": {
+                "type": "integer",
+                "maximum": 65535,
+                "minimum": 1,
+                "description": "The service port."
+              },
               "type": {
                 "type": "string",
                 "enum": [
@@ -130,9 +53,9 @@
                 ],
                 "description": "The service type."
               },
-              "description": {
+              "version": {
                 "type": "string",
-                "description": "The service description."
+                "description": "The service version."
               }
             },
             "type": "object",
@@ -143,6 +66,10 @@
           },
           "type": "array",
           "description": "List of services in the application."
+        },
+        "version": {
+          "type": "string",
+          "description": "The application version."
         }
       },
       "type": "object",
@@ -201,6 +128,13 @@
               }
             ],
             "properties": {
+              "regions": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "description": "List of regions to deploy to."
+              },
               "target": {
                 "type": "string",
                 "enum": [
@@ -208,13 +142,6 @@
                   "aws"
                 ],
                 "description": "The deployment target."
-              },
-              "regions": {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array",
-                "description": "List of regions to deploy to."
               }
             },
             "type": "object",
@@ -236,10 +163,6 @@
               },
               {
                 "properties": {
-                  "version": {
-                    "type": "string",
-                    "description": "The language-specific framework version."
-                  },
                   "type": {
                     "type": "string",
                     "enum": [
@@ -248,6 +171,10 @@
                       "swarm"
                     ],
                     "description": "The orchestrator type."
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "The language-specific framework version."
                   }
                 },
                 "type": "object",
@@ -270,6 +197,79 @@
       },
       "type": "object",
       "description": "The project environments."
+    },
+    "name": {
+      "type": "string",
+      "description": "The project name."
+    },
+    "pipeline": {
+      "properties": {
+        "coverage": {
+          "type": "boolean",
+          "description": "Enable coverage."
+        },
+        "lint": {
+          "type": "boolean",
+          "description": "Enable linting."
+        },
+        "owner": {
+          "type": "string",
+          "description": "The repository owner."
+        },
+        "provider": {
+          "type": "string",
+          "enum": [
+            "github",
+            "gitlab"
+          ],
+          "description": "The CI/CD provider."
+        },
+        "repo": {
+          "type": "string",
+          "description": "The repository name."
+        },
+        "test": {
+          "type": "boolean",
+          "description": "Enable testing."
+        }
+      },
+      "type": "object",
+      "required": [
+        "provider",
+        "owner",
+        "repo"
+      ],
+      "description": "CI/CD pipeline configuration."
+    },
+    "vcs": {
+      "properties": {
+        "owner": {
+          "type": "string",
+          "description": "The repository owner."
+        },
+        "provider": {
+          "type": "string",
+          "enum": [
+            "github"
+          ],
+          "description": "The VCS provider."
+        },
+        "repo": {
+          "type": "string",
+          "description": "The repository name."
+        },
+        "visibility": {
+          "type": "string",
+          "description": "The repository visibility."
+        }
+      },
+      "type": "object",
+      "required": [
+        "provider",
+        "owner",
+        "repo"
+      ],
+      "description": "Version Control System configuration."
     }
   },
   "type": "object",
