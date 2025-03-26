@@ -6,9 +6,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPipelines_JSONSchema(t *testing.T) {
+func TestPipeline_JSONSchema(t *testing.T) {
 	t.Run("Schema generation", func(t *testing.T) {
-		p := &Pipelines{}
+		p := &Pipeline{}
 		schema := p.JSONSchema()
 		assert.NotNil(t, schema)
 		assert.Equal(t, "CI/CD pipeline configuration.", schema.Description)
@@ -24,9 +24,9 @@ func TestPipelines_JSONSchema(t *testing.T) {
 	})
 }
 
-func TestPipelines_SetDefaults(t *testing.T) {
+func TestPipeline_SetDefaults(t *testing.T) {
 	t.Run("Sets defaults for lint, test, coverage to true", func(t *testing.T) {
-		p := Pipelines{}
+		p := Pipeline{}
 		p.SetDefaults()
 		assert.NotNil(t, p.Lint)
 		assert.True(t, *p.Lint)
@@ -38,15 +38,15 @@ func TestPipelines_SetDefaults(t *testing.T) {
 
 	t.Run("Does not overwrite existing values", func(t *testing.T) {
 		disable := false
-		p := Pipelines{Lint: &disable}
+		p := Pipeline{Lint: &disable}
 		p.SetDefaults()
 		assert.False(t, *p.Lint)
 	})
 }
 
-func TestPipelines_Validate(t *testing.T) {
+func TestPipeline_Validate(t *testing.T) {
 	t.Run("Valid provider", func(t *testing.T) {
-		p := Pipelines{
+		p := Pipeline{
 			Provider: ProviderGitHub,
 			Owner:    "some-owner",
 			Repo:     "some-repo",
@@ -56,7 +56,7 @@ func TestPipelines_Validate(t *testing.T) {
 	})
 
 	t.Run("Invalid provider", func(t *testing.T) {
-		p := Pipelines{
+		p := Pipeline{
 			Provider: "unknown",
 			Owner:    "some-owner",
 			Repo:     "some-repo",
