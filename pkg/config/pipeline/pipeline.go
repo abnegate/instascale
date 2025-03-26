@@ -15,8 +15,8 @@ const (
 
 var Providers = []Provider{ProviderGitHub, ProviderGitLab}
 
-// Pipelines represents CI/CD pipeline configuration.
-type Pipelines struct {
+// Pipeline represents CI/CD pipeline configuration.
+type Pipeline struct {
 	Provider Provider `yaml:"provider" json:"provider"`
 	Owner    string   `yaml:"owner" json:"owner"`
 	Repo     string   `yaml:"repo" json:"repo"`
@@ -25,8 +25,8 @@ type Pipelines struct {
 	Coverage *bool    `yaml:"coverage" json:"coverage"`
 }
 
-// JSONSchema returns a JSON schema for the Pipelines configuration.
-func (p *Pipelines) JSONSchema() *jsonschema.Schema {
+// JSONSchema returns a JSON schema for the Pipeline configuration.
+func (p *Pipeline) JSONSchema() *jsonschema.Schema {
 	return &jsonschema.Schema{
 		Type:        "object",
 		Description: "CI/CD pipeline configuration.",
@@ -61,8 +61,8 @@ func (p *Pipelines) JSONSchema() *jsonschema.Schema {
 	}
 }
 
-// SetDefaults sets the default values for the Pipelines configuration.
-func (p *Pipelines) SetDefaults() {
+// SetDefaults sets the default values for the Pipeline configuration.
+func (p *Pipeline) SetDefaults() {
 	if p.Lint == nil {
 		p.Lint = new(bool)
 		*p.Lint = true
@@ -77,8 +77,8 @@ func (p *Pipelines) SetDefaults() {
 	}
 }
 
-// Validate returns an error if the Pipelines configuration is invalid.
-func (p *Pipelines) Validate() error {
+// Validate returns an error if the Pipeline configuration is invalid.
+func (p *Pipeline) Validate() error {
 	if err := validateProvider(p.Provider); err != nil {
 		return err
 	}

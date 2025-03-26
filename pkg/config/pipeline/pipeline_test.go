@@ -6,6 +6,24 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestPipelines_JSONSchema(t *testing.T) {
+	t.Run("Schema generation", func(t *testing.T) {
+		p := &Pipelines{}
+		schema := p.JSONSchema()
+		assert.NotNil(t, schema)
+		assert.Equal(t, "CI/CD pipeline configuration.", schema.Description)
+
+		_, hasProvider := schema.Properties.Get("provider")
+		assert.True(t, hasProvider, "Expected 'provider' property in schema")
+
+		_, hasOwner := schema.Properties.Get("owner")
+		assert.True(t, hasOwner, "Expected 'owner' property in schema")
+
+		_, hasRepo := schema.Properties.Get("repo")
+		assert.True(t, hasRepo, "Expected 'repo' property in schema")
+	})
+}
+
 func TestPipelines_SetDefaults(t *testing.T) {
 	t.Run("Sets defaults for lint, test, coverage to true", func(t *testing.T) {
 		p := Pipelines{}
@@ -45,23 +63,5 @@ func TestPipelines_Validate(t *testing.T) {
 		}
 		err := p.Validate()
 		assert.Error(t, err)
-	})
-}
-
-func TestPipelines_JSONSchema(t *testing.T) {
-	t.Run("Schema generation", func(t *testing.T) {
-		p := &Pipelines{}
-		schema := p.JSONSchema()
-		assert.NotNil(t, schema)
-		assert.Equal(t, "CI/CD pipeline configuration.", schema.Description)
-
-		_, hasProvider := schema.Properties.Get("provider")
-		assert.True(t, hasProvider, "Expected 'provider' property in schema")
-
-		_, hasOwner := schema.Properties.Get("owner")
-		assert.True(t, hasOwner, "Expected 'owner' property in schema")
-
-		_, hasRepo := schema.Properties.Get("repo")
-		assert.True(t, hasRepo, "Expected 'repo' property in schema")
 	})
 }

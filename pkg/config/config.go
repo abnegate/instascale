@@ -16,7 +16,7 @@ type Config struct {
 	Application  application.Application            `yaml:"application" json:"application"`
 	Environments map[string]environment.Environment `yaml:"environments" json:"environments"`
 	VCS          *vcs.VCS                           `yaml:"vcs,omitempty" json:"vcs,omitempty"`
-	Pipeline     *pipeline.Pipelines                `yaml:"pipeline,omitempty" json:"pipeline,omitempty"`
+	Pipeline     *pipeline.Pipeline                 `yaml:"pipeline,omitempty" json:"pipeline,omitempty"`
 }
 
 // JSONSchema returns a JSON schema for the Config configuration.
@@ -30,7 +30,7 @@ func (c *Config) JSONSchema() *jsonschema.Schema {
 				Description: "The project name.",
 			},
 			"vcs":         (&vcs.VCS{}).JSONSchema(),
-			"pipeline":    (&pipeline.Pipelines{}).JSONSchema(),
+			"pipeline":    (&pipeline.Pipeline{}).JSONSchema(),
 			"application": (&application.Application{}).JSONSchema(),
 			"environments": {
 				Type:                 "object",
