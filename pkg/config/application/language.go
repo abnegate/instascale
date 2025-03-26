@@ -14,7 +14,9 @@ const (
 	LanguageJavaScript LanguageName = "javascript"
 )
 
-var LanguageNames = []LanguageName{LanguageJavaScript}
+var LanguageNames = []LanguageName{
+	LanguageJavaScript,
+}
 
 // LanguageVersion defines the application programming language version.
 type LanguageVersion string
@@ -23,7 +25,13 @@ const (
 	LanguageVersionES6 LanguageVersion = "es6"
 )
 
-var LanguageVersions = []LanguageVersion{LanguageVersionES6}
+var LanguageVersions = []LanguageVersion{
+	LanguageVersionES6,
+}
+
+var JavaScriptVersions = []LanguageVersion{
+	LanguageVersionES6,
+}
 
 // Language defines the application programming language.
 type Language struct {
@@ -110,16 +118,21 @@ func (l *Language) SetDefaults() {
 
 // Validate checks that the Language configuration is valid.
 func (l *Language) Validate() error {
-	allowedFrameworks := allowedFrameworksForLanguage(l)
-	for _, allowedFramework := range allowedFrameworks {
+	for _, languageName := range LanguageNames {
+		if l.Name == languageName {
+			break
+		}
+		return fmt.Errorf("language %q is not allowed", l.Name)
+	}
+
+	for _, allowedFramework := range allowedFrameworksForLanguage(l) {
 		if l.Framework.Name == allowedFramework {
 			break
 		}
 		return fmt.Errorf("framework %q is not allowed for language %q", l.Framework.Name, l.Name)
 	}
-
-	allowedVersions := allowedVersionsForLanguage(l)
-	for _, allowedVersion := range allowedVersions {
+	
+	for _, allowedVersion := range allowedVersionsForLanguage(l) {
 		if l.Version == allowedVersion {
 			break
 		}
@@ -136,7 +149,7 @@ func (l *Language) Validate() error {
 func allowedVersionsForLanguage(l *Language) []LanguageVersion {
 	switch l.Name {
 	case LanguageJavaScript:
-		return []LanguageVersion{LanguageVersionES6}
+		return JavaScriptVersions
 	default:
 		return []LanguageVersion{}
 	}

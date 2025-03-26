@@ -26,6 +26,13 @@ func TestLanguage_UnmarshalYAML(t *testing.T) {
 		assert.Equal(t, LanguageVersionES6, l.Version)
 		assert.Equal(t, FrameworkExpress, l.Framework.Name)
 	})
+
+	t.Run("Unmarshal as invalid type", func(t *testing.T) {
+		var l Language
+		yml := `100`
+		err := yaml.Unmarshal([]byte(yml), &l)
+		assert.Error(t, err)
+	})
 }
 
 func TestLanguage_SetDefaults(t *testing.T) {
