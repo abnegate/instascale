@@ -1,0 +1,23 @@
+name: Lint
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: Run lint
+        uses: golangci/golangci-lint-action@v7
+        with:
+          version: v2.0
