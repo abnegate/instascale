@@ -55,12 +55,20 @@ func TestApplication_Validate(t *testing.T) {
 	t.Run("Invalid language", func(t *testing.T) {
 		app := Application{
 			Language: Language{
-				Name:      "some-other-lang",
-				Version:   "v1",
-				Framework: Framework{Name: FrameworkExpress, Version: FrameworkExpressLatest},
+				Name:    "some-other-lang",
+				Version: "v1",
+				Framework: Framework{
+					Name:    FrameworkExpress,
+					Version: FrameworkExpressLatest,
+				},
 			},
 			Services: []Service{
-				{Name: "my-service"},
+				{
+					Name:    "my-service",
+					Type:    ServiceTypeHttp,
+					Port:    8080,
+					Version: "1.0.0",
+				},
 			},
 		}
 		err := app.Validate()
@@ -70,12 +78,18 @@ func TestApplication_Validate(t *testing.T) {
 	t.Run("Invalid service", func(t *testing.T) {
 		app := Application{
 			Language: Language{
-				Name:      LanguageJavaScript,
-				Version:   LanguageVersionES6,
-				Framework: Framework{Name: FrameworkExpress, Version: FrameworkExpressLatest},
+				Name:    LanguageJavaScript,
+				Version: LanguageVersionES6,
+				Framework: Framework{
+					Name:    FrameworkExpress,
+					Version: FrameworkExpressLatest,
+				},
 			},
 			Services: []Service{
-				{Name: "", Type: ServiceTypeHttp},
+				{
+					Name: "",
+					Type: ServiceTypeHttp,
+				},
 			},
 		}
 		err := app.Validate()
