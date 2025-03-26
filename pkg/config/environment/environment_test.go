@@ -7,6 +7,20 @@ import (
 	"instascale/pkg/config/environment/deploy"
 )
 
+func TestEnvironment_JSONSchema(t *testing.T) {
+	t.Run("Schema generation", func(t *testing.T) {
+		env := &Environment{}
+		schema := env.JSONSchema()
+		assert.NotNil(t, schema)
+
+		_, hasDeploy := schema.Properties.Get("deploy")
+		assert.True(t, hasDeploy, "Expected 'deploy' property in schema")
+
+		_, hasOrchestrator := schema.Properties.Get("orchestrator")
+		assert.True(t, hasOrchestrator, "Expected 'orchestrator' property in schema")
+	})
+}
+
 func TestEnvironment_SetDefaults(t *testing.T) {
 	t.Run("Sets defaults for deploy and orchestrator", func(t *testing.T) {
 		env := Environment{}
@@ -51,19 +65,5 @@ func TestEnvironment_Validate(t *testing.T) {
 		}
 		err := env.Validate()
 		assert.Error(t, err)
-	})
-}
-
-func TestEnvironment_JSONSchema(t *testing.T) {
-	t.Run("Schema generation", func(t *testing.T) {
-		env := &Environment{}
-		schema := env.JSONSchema()
-		assert.NotNil(t, schema)
-
-		_, hasDeploy := schema.Properties.Get("deploy")
-		assert.True(t, hasDeploy, "Expected 'deploy' property in schema")
-
-		_, hasOrchestrator := schema.Properties.Get("orchestrator")
-		assert.True(t, hasOrchestrator, "Expected 'orchestrator' property in schema")
 	})
 }
