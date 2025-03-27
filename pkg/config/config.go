@@ -10,6 +10,13 @@ import (
 	"instascale/pkg/converters"
 )
 
+// Section defines the minimal behavior every configuration section must implement.
+type Section interface {
+	SetDefaults()
+	Validate() error
+	JSONSchema() *jsonschema.Schema
+}
+
 // Config defines the project configuration.
 type Config struct {
 	Name         string                             `yaml:"name" json:"name"`
@@ -65,27 +72,63 @@ func (c *Config) SetDefaults() {
 
 // Validate calls the Validate methods on nested sections.
 func (c *Config) Validate() error {
-	if c.Name == "" {
-		return fmt.Errorf("name is required")
-	}
-	if err := c.Application.Validate(); err != nil {
+	if err := validateName(c.Name); err != nil {
 		return err
 	}
-	for _, env := range c.Environments {
-		if err := env.Validate(); err != nil {
-			return fmt.Errorf("invalid environment %s: %s", c.Name, err)
-		}
+	if err := validateApplication(c.Application); err != nil {
+		return err
 	}
+	if err := validateEnvironments(c.Environments); err != nil {
+		return err
+	}
+	if err := validateVCS(c.VCS); err != nil {
+		return err
+	}
+	if err := validatePipeline(c.Pipeline); err != nil {
+		return err
+	}
+	return nil
+}
 
-	if c.VCS != nil {
-		if err := c.VCS.Validate(); err != nil {
-			return err
+func validateName(name string) error {
+	if name == "" {
+		return fmt.Errorf("name is required")
+	}
+	return nil
+}
+
+func validateApplication(a application.Application) error {
+	if err := a.Validate(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func validateEnvironments(envs map[string]environment.Environment) error {
+	for key, env := range envs {
+		if err := env.Validate(); err != nil {
+			return fmt.Errorf("invalid environment %q: %s", key, err)
 		}
 	}
-	if c.Pipeline != nil {
-		if err := c.Pipeline.Validate(); err != nil {
-			return err
-		}
+	return nil
+}
+
+func validateVCS(v *vcs.VCS) error {
+	if v == nil {
+		return nil
+	}
+	if err := (*v).Validate(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func validatePipeline(p *pipeline.Pipeline) error {
+	if p == nil {
+		return nil
+	}
+	if err := (*p).Validate(); err != nil {
+		return err
 	}
 	return nil
 }
